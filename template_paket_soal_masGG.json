@@ -1,0 +1,22 @@
+[
+  {
+    "id": 201,
+    "topic": "Matematika — Integral Tentu (LaTeX)",
+    "mediaType": "none",
+    "mediaBadge": "📐 LaTeX Math",
+    "stem": "Hitunglah nilai dari $$\\int_{0}^{3} (2x + 1)\\,dx$$",
+    "options": ["$9$", "$10$", "$12$", "$15$"],
+    "correctIndex": 2,
+    "explanation": "<p><strong>Pembahasan:</strong> $$\\left[x^2 + x\\right]_0^3 = (3^2 + 3) - 0 = 12$$.</p>"
+  },
+  {
+    "id": 202,
+    "topic": "Fisika — Simulasi Tuas Interaktif",
+    "mediaType": "sim_lever",
+    "mediaBadge": "🧪 Simulasi Tuas",
+    "stem": "Jika beban batu $W = 300\\text{ N}$ berada pada jarak $l_b = 1\\text{ m}$ dari tumpuan dan panjang lengan kuasa $l_k = 2\\text{ m}$, berapakah gaya kuasa minimum untuk mengangkat batu?",
+    "options": ["$100\\text{ N}$", "$150\\text{ N}$", "$200\\text{ N}$", "$300\\text{ N}$"],
+    "correctIndex": 1,
+    "explanation": "<p><strong>Pembahasan:</strong> $$F = \\frac{W \\times l_b}{l_k} = \\frac{300 \\times 1}{2} = 150\\text{ N}$$.</p>"
+  }
+]

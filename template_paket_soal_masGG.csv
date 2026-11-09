@@ -1,0 +1,3 @@
+Topik;TipeMedia(none/image/sim_lever/anim_doppler/vid_freefall);Pertanyaan(Support LaTeX);OpsiA;OpsiB;OpsiC;OpsiD;Kunci(A/B/C/D);Pembahasan(Support LaTeX)
+"Matematika - Aljabar";"none";"Jika $2x + 5 = 17$, berapakah nilai $x$?";"$4$";"$6$";"$8$";"$11$";"B";"Kurangi kedua ruas dengan 5: $2x = 12 \implies x = 6$."
+"Fisika - Pesawat Sederhana";"sim_lever";"Keuntungan mekanis tuas dengan $l_k = 2\text{ m}$ dan $l_b = 0{,}5\text{ m}$ adalah ...";"$2$";"$3$";"$4$";"$5$";"C";"Rumus keuntungan mekanis: $KM = \frac{l_k}{l_b} = \frac{2}{0{,}5} = 4$."
