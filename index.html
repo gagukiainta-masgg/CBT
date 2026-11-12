@@ -65,22 +65,27 @@
         </div>
       </div>
 
-      <!-- Form Login -->
-      <form id="portalLoginForm" class="p-6 sm:p-8 space-y-5">
+      <!-- Form Login (Identitas Unik Email Google + Auto-Register Ringan) -->
+      <form id="portalLoginForm" class="p-6 sm:p-8 space-y-4">
         <div class="space-y-1 text-center">
           <h2 class="text-base font-bold text-slate-900">Masuk ke Portal Ujian</h2>
-          <p class="text-xs text-slate-500">Masukkan nama peserta atau ID akun Anda untuk melanjutkan</p>
+          <p class="text-xs text-slate-500">Gunakan Email Google Anda agar riwayat nilai tercatat secara unik & tidak tertukar dengan peserta bernama sama</p>
         </div>
 
-        <div class="space-y-4">
+        <div class="space-y-3.5">
           <div>
-            <label for="portalUsernameInput" class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Lengkap / ID Pengguna</label>
+            <label for="portalUsernameInput" class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap Peserta</label>
             <input id="portalUsernameInput" type="text" required placeholder="Contoh: Budi Santoso" value="Peserta Simulasi" class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
           </div>
 
           <div>
-            <div class="flex items-center justify-between mb-1.5">
-              <label for="portalPasswordInput" class="block text-xs font-semibold text-slate-700">Kode Akses / Kata Sandi <span class="text-slate-400 font-normal">(Opsional untuk Peserta)</span></label>
+            <label for="portalEmailInput" class="block text-xs font-semibold text-slate-700 mb-1">Email Google Peserta <span class="text-indigo-600 font-bold">(ID Unik Riwayat)</span></label>
+            <input id="portalEmailInput" type="email" required placeholder="nama.anda@gmail.com" value="peserta.osn@gmail.com" class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="portalPasswordInput" class="block text-xs font-semibold text-slate-700">Kode Akses / PIN <span class="text-slate-400 font-normal">(Opsional untuk Peserta)</span></label>
             </div>
             <input id="portalPasswordInput" type="password" placeholder="Kosongkan untuk Peserta Ujian" class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
           </div>
@@ -133,6 +138,9 @@
             <button id="navBtnReview" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 cursor-not-allowed" title="Selesaikan ujian terlebih dahulu untuk membuka pembahasan">
               📖 2. Halaman Pembahasan
             </button>
+            <button id="navBtnHistory" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900">
+              📊 Riwayat Simulasi (<span id="navHistoryCountBadge">0</span>)
+            </button>
             <!-- Admin-Only Tabs (Completely hidden for regular users) -->
             <button id="navBtnTemplate" type="button" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900">
               📤 Upload & Template
@@ -166,11 +174,11 @@
     <!-- MAIN CONTENT CONTAINER -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
 
-      <!-- ========================================== -->
-      <!-- VIEW 0: PENGATURAN, KATALOG PAKET & SOAL   -->
-      <!-- ========================================== -->
+      <!-- ========================================================================= -->
+      <!-- VIEW 0: LOBI PEMILIHAN JENJANG KELAS, MAPEL/JENIS UJIAN & PENGATURAN WAKTU -->
+      <!-- ========================================================================= -->
       <section id="viewSetup" class="space-y-6">
-        <!-- Hero Banner mas GG (Clean, no technical promotional badges) -->
+        <!-- Hero Banner mas GG -->
         <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-sky-900 rounded-2xl p-6 sm:p-7 text-white shadow-lg relative overflow-hidden border border-slate-800">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
             <div class="lg:col-span-8 space-y-3.5">
@@ -181,7 +189,7 @@
                     mas GG — Simulator Ujian & Evaluasi
                   </h2>
                   <p id="heroRoleDescriptionText" class="text-sky-200/90 text-xs sm:text-sm mt-1">
-                    Pilih jenjang pendidikan & paket soal di bawah ini, atur durasi waktu pengerjaan (maksimal 180 menit), lalu klik Mulai Ujian.
+                    Pilih <strong>Langkah 1 (Jenjang Kelas)</strong> &rarr; <strong>Langkah 2 (Mata Pelajaran / Jenis Ujian)</strong> &rarr; <strong>Langkah 3 (Paket Soal & Waktu)</strong> di bawah ini.
                   </p>
                 </div>
               </div>
@@ -190,7 +198,11 @@
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
                   </svg>
-                  <span>Mulai Ujian Sekarang</span>
+                  <span id="btnStartExamMainLabel">Mulai Ujian Sekarang</span>
+                </button>
+
+                <button id="btnHeroViewHistory" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-xs sm:text-sm transition">
+                  <span>📊 Lihat Riwayat Simulasi Saya</span>
                 </button>
 
                 <!-- Admin-only action buttons on hero (Completely hidden for regular users) -->
@@ -206,15 +218,19 @@
               </div>
             </div>
 
-            <!-- Status Sesi Peserta di Kanan Hero (Clean, no Admin switch hint) -->
-            <div class="lg:col-span-4 bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 space-y-2.5 text-xs">
+            <!-- Status Sesi Peserta di Kanan Hero -->
+            <div class="lg:col-span-4 bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 space-y-2 text-xs">
               <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                <span class="font-bold text-sky-300 uppercase tracking-wider">📋 Informasi Sesi Ujian</span>
+                <span class="font-bold text-sky-300 uppercase tracking-wider">📋 Identitas & Sesi Ujian</span>
                 <span id="persistenceStatusBadge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">Auto-Save Aktif</span>
               </div>
               <div class="flex justify-between text-slate-300">
                 <span>Nama Peserta:</span>
                 <strong id="heroActiveUserText" class="text-white">Peserta Simulasi</strong>
+              </div>
+              <div class="flex justify-between text-slate-300">
+                <span>Email Google (ID Unik):</span>
+                <strong id="heroActiveEmailText" class="text-sky-300 truncate max-w-[180px]">peserta.osn@gmail.com</strong>
               </div>
               <div class="flex justify-between text-slate-300">
                 <span>Akses Pembahasan:</span>
@@ -237,34 +253,122 @@
           </div>
         </div>
 
-        <!-- KATALOG PILIHAN PAKET SOAL (FILTER JENJANG & MATA PELAJARAN) -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
-            <div>
-              <h3 class="font-bold text-slate-900 text-base">🗂️ Pilih Jenjang Pendidikan & Paket Soal Simulasi</h3>
-              <p class="text-xs text-slate-500">Pilih paket ujian yang ingin Anda kerjakan, lalu tekan tombol Mulai Simulasi Ujian.</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
+        <!-- ========================================================================= -->
+        <!-- WIZARD PEMILIHAN BERTAHAP: JENJANG KELAS -> MAPEL/JENIS UJIAN -> PAKET   -->
+        <!-- ========================================================================= -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-6">
+          <!-- LANGKAH 1: PILIH LEVEL KELAS / JENJANG PENDIDIKAN -->
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">1</span>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-sm sm:text-base">Pilih Level Kelas / Jenjang Pendidikan</h3>
+                  <p class="text-xs text-slate-500">Klik kartu jenjang pendidikan untuk memfilter mata pelajaran dan paket ujian yang sesuai</p>
+                </div>
+              </div>
               <select id="filterLevelSelect" class="rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-50">
                 <option value="ALL">Semua Jenjang Pendidikan</option>
-                <option value="SD/MI">SD / MI</option>
-                <option value="SMP/MTs">SMP / MTs</option>
-                <option value="SMA/MA">SMA / MA / SMK</option>
+                <option value="SD/MI">SD / MI (Kelas 1–6)</option>
+                <option value="SMP/MTs">SMP / MTs (Kelas 7–9)</option>
+                <option value="SMA/MA">SMA / MA / SMK (Kelas 10–12)</option>
                 <option value="Umum">Umum / Perguruan Tinggi</option>
               </select>
-              <select id="filterSubjectSelect" class="rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-50">
-                <option value="ALL">Semua Mata Pelajaran</option>
-                <option value="IPA (Sains)">IPA (Sains)</option>
-                <option value="Matematika">Matematika</option>
-                <option value="Fisika">Fisika</option>
-                <option value="Biologi">Biologi</option>
-              </select>
+            </div>
+
+            <!-- Interactive Level Cards -->
+            <div id="wizardLevelCardsGrid" class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+              <button type="button" data-level-val="ALL" class="wizard-level-btn p-3 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 text-left transition flex flex-col justify-between">
+                <span class="text-lg">🎓</span>
+                <div class="mt-1">
+                  <p class="font-extrabold text-xs text-indigo-950">Semua Jenjang</p>
+                  <p class="text-[11px] text-indigo-700">Tampilkan Semua</p>
+                </div>
+              </button>
+              <button type="button" data-level-val="SD/MI" class="wizard-level-btn p-3 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-left transition flex flex-col justify-between">
+                <span class="text-lg">🎒</span>
+                <div class="mt-1">
+                  <p class="font-bold text-xs text-slate-900">SD / MI</p>
+                  <p class="text-[11px] text-slate-500">Kelas 4, 5 &amp; 6</p>
+                </div>
+              </button>
+              <button type="button" data-level-val="SMP/MTs" class="wizard-level-btn p-3 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-left transition flex flex-col justify-between">
+                <span class="text-lg">📘</span>
+                <div class="mt-1">
+                  <p class="font-bold text-xs text-slate-900">SMP / MTs</p>
+                  <p class="text-[11px] text-slate-500">Kelas 7, 8 &amp; 9</p>
+                </div>
+              </button>
+              <button type="button" data-level-val="SMA/MA" class="wizard-level-btn p-3 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-left transition flex flex-col justify-between">
+                <span class="text-lg">🔬</span>
+                <div class="mt-1">
+                  <p class="font-bold text-xs text-slate-900">SMA / MA / SMK</p>
+                  <p class="text-[11px] text-slate-500">Kelas 10, 11 &amp; 12</p>
+                </div>
+              </button>
+              <button type="button" data-level-val="Umum" class="wizard-level-btn p-3 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-left transition flex flex-col justify-between">
+                <span class="text-lg">🏛️</span>
+                <div class="mt-1">
+                  <p class="font-bold text-xs text-slate-900">Umum / PT</p>
+                  <p class="text-[11px] text-slate-500">UTBK &amp; Mahasiswa</p>
+                </div>
+              </button>
             </div>
           </div>
 
-          <!-- Daftar Kartu Paket Soal -->
-          <div id="packageCardsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Diisi otomatis via JS -->
+          <!-- LANGKAH 2: PILIH MATA PELAJARAN / JENIS UJIAN -->
+          <div class="space-y-3 pt-4 border-t border-slate-100">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">2</span>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-sm sm:text-base">Pilih Mata Pelajaran / Jenis Ujian</h3>
+                  <p class="text-xs text-slate-500">Saring berdasarkan bidang studi atau jenis kompetisi (OSN, Latihan Harian, Tryout)</p>
+                </div>
+              </div>
+              <select id="filterSubjectSelect" class="rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-50">
+                <option value="ALL">Semua Mata Pelajaran</option>
+                <option value="IPA (Sains)">IPA (Sains) — OSN &amp; Tryout</option>
+                <option value="Matematika">Matematika — Olimpiade &amp; Latihan</option>
+                <option value="Fisika">Fisika — Mekanika &amp; Gelombang</option>
+                <option value="Biologi">Biologi — Ekologi &amp; Anatomi</option>
+              </select>
+            </div>
+
+            <!-- Interactive Subject Pills -->
+            <div id="wizardSubjectPills" class="flex flex-wrap gap-2">
+              <button type="button" data-subject-val="ALL" class="wizard-subject-btn px-3.5 py-2 rounded-xl border-2 border-indigo-600 bg-indigo-50 text-indigo-800 font-bold text-xs transition">
+                ✨ Semua Mata Pelajaran
+              </button>
+              <button type="button" data-subject-val="IPA (Sains)" class="wizard-subject-btn px-3.5 py-2 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-slate-700 font-semibold text-xs transition">
+                🌿 IPA (Sains)
+              </button>
+              <button type="button" data-subject-val="Matematika" class="wizard-subject-btn px-3.5 py-2 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-slate-700 font-semibold text-xs transition">
+                📐 Matematika
+              </button>
+              <button type="button" data-subject-val="Fisika" class="wizard-subject-btn px-3.5 py-2 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-slate-700 font-semibold text-xs transition">
+                ⚡ Fisika
+              </button>
+              <button type="button" data-subject-val="Biologi" class="wizard-subject-btn px-3.5 py-2 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-slate-700 font-semibold text-xs transition">
+                🧬 Biologi
+              </button>
+            </div>
+          </div>
+
+          <!-- LANGKAH 3: PILIH PAKET SOAL SIMULASI -->
+          <div class="space-y-3 pt-4 border-t border-slate-100">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">3</span>
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm sm:text-base">Pilih Paket Soal Ujian yang Tersedia</h3>
+                <p class="text-xs text-slate-500">Klik pada kartu paket soal untuk mengaktifkannya sebelum menekan Mulai Simulasi Ujian</p>
+              </div>
+            </div>
+
+            <!-- Daftar Kartu Paket Soal -->
+            <div id="packageCardsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Diisi otomatis via JS -->
+            </div>
           </div>
         </div>
 
@@ -310,11 +414,15 @@
               </div>
             </div>
 
-            <!-- Nama Peserta / Paket Soal -->
+            <!-- Nama & Email Peserta -->
             <div class="space-y-3 pt-1">
               <div>
                 <label for="inputStudentName" class="block text-xs font-medium text-slate-600 mb-1">Nama Peserta Simulasi</label>
                 <input id="inputStudentName" type="text" value="Peserta Simulasi" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              </div>
+              <div>
+                <label for="inputStudentEmail" class="block text-xs font-medium text-slate-600 mb-1">Email Google Peserta (ID Riwayat)</label>
+                <input id="inputStudentEmail" type="email" value="peserta.osn@gmail.com" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
               </div>
               <div class="flex items-center justify-between text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
                 <span>Otomatis Kumpulkan Saat Waktu Habis</span>
@@ -323,7 +431,7 @@
             </div>
 
             <button id="btnStartExamCard" type="button" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow transition flex items-center justify-center gap-2">
-              <span>Mulai Simulasi Ujian</span>
+              <span id="btnStartExamCardLabel">Mulai Simulasi Ujian</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
               </svg>
@@ -342,7 +450,7 @@
                   <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-800">Informasi Paket Ujian Terpilih</span>
                   <h3 id="userSelectedPkgHeading" class="font-extrabold text-slate-900 text-base sm:text-lg">OSN Tingkat Kabupaten IPA SD 2025 (60 Butir Soal)</h3>
                   <p id="activePackageDescText" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Butir-butir soal akan ditampilkan satu per satu setelah Anda menekan tombol <strong>Mulai Simulasi Ujian</strong>. Pastikan Anda menekan tombol <strong>Konfirmasi Jawaban & Lanjut</strong> pada setiap nomor untuk menyimpan jawaban Anda.
+                    Butir-butir soal akan ditampilkan satu per satu mulai dari <strong>Nomor 1</strong> setelah Anda menekan tombol <strong>Mulai Simulasi Ujian</strong>. Setiap sesi ujian baru setelah selesai ujian sebelumnya otomatis dimulai dalam keadaan bersih (reset).
                   </p>
                 </div>
               </div>
@@ -366,8 +474,8 @@
                 <p class="font-bold text-slate-800">📌 Petunjuk Singkat Pengerjaan Simulasi:</p>
                 <ul class="list-disc pl-5 space-y-1">
                   <li>Gunakan tetikus (klik langsung) atau pintasan papan ketik (tombol <strong>A, B, C, D</strong>) untuk memilih jawaban, lalu tekan <strong>Enter</strong> untuk mengonfirmasi jawaban.</li>
-                  <li>Klik nomor soal pada <strong>Kotak Nomor Ujian</strong> di sebelah kanan untuk berpindah ke nomor soal mana pun secara langsung.</li>
-                  <li>Setelah seluruh soal selesai dikerjakan, klik <strong>Selesai Ujian & Lihat Pembahasan</strong> untuk melihat skor akhir dan pembahasan lengkap setiap nomor.</li>
+                  <li>Setiap kali Anda mengakhiri ujian, hasil skor dan rincian jawaban otomatis dicatat ke dalam menu <strong>📊 Riwayat Simulasi</strong> berdasarkan Email Google Anda.</li>
+                  <li>Ketika Anda memulai ulang ujian setelah selesai, sistem otomatis me-reset soal kembali ke <strong>Nomor 1</strong> dalam kondisi bersih.</li>
                 </ul>
               </div>
             </div>
@@ -497,6 +605,7 @@
                 <div>
                   <p class="text-xs text-slate-500 font-medium">Peserta Ujian</p>
                   <h3 id="examParticipantName" class="font-bold text-slate-900 text-sm">Peserta Simulasi</h3>
+                  <p id="examParticipantEmail" class="text-[11px] text-indigo-600 font-medium">peserta.osn@gmail.com</p>
                 </div>
                 <button id="btnPauseResumeTimer" type="button" class="px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-600 transition">
                   ⏸️ Jeda Waktu
@@ -602,7 +711,7 @@
               </div>
             </div>
 
-            <!-- Tombol Ulangi Ujian -->
+            <!-- Tombol Ulangi Ujian (Reset Bersih dari No. 1) -->
             <div class="md:col-span-2 flex flex-col gap-2">
               <button id="btnRetakeExam" type="button" class="w-full py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm shadow-sm transition">
                 🔄 Ulangi Ujian
@@ -759,6 +868,80 @@
         </div>
       </section>
 
+      <!-- ========================================================================= -->
+      <!-- VIEW 2.5: HALAMAN RIWAYAT SIMULASI PESERTA & KEBIJAKAN RETENSI OTOMATIS    -->
+      <!-- ========================================================================= -->
+      <section id="viewHistory" class="hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                📊 Log Riwayat Simulasi &amp; Pembersihan Otomatis (Auto-Purge)
+              </span>
+              <h2 class="text-xl font-extrabold text-slate-900 mt-1">Riwayat Hasil Simulasi Ujian</h2>
+              <p class="text-xs sm:text-sm text-slate-500">
+                Mencatat nama peserta, Email Google unik, waktu pengerjaan, paket ujian, durasi terpakai, serta rincian skor benar/salah/kosong.
+              </p>
+            </div>
+
+            <!-- Kontrol Auto-Cleanup Retensi Hari -->
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
+                <span class="font-semibold text-slate-600">Auto-Hapus Riwayat &gt;</span>
+                <select id="selectRetentionDays" class="rounded-lg border border-slate-300 px-2 py-1 font-bold text-indigo-700 bg-white">
+                  <option value="14">14 Hari</option>
+                  <option value="30" selected>30 Hari (Rekomendasi)</option>
+                  <option value="60">60 Hari</option>
+                  <option value="90">90 Hari</option>
+                </select>
+              </div>
+              <button id="btnClearUserHistory" type="button" class="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs transition">
+                🗑️ Bersihkan Riwayat Saya
+              </button>
+            </div>
+          </div>
+
+          <!-- Ringkasan Statistik Riwayat User Aktif -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <p class="text-xs text-slate-500 font-medium">Identitas Email Google</p>
+              <p id="historyUserEmailBadge" class="text-sm font-extrabold text-slate-900 mt-1 truncate">peserta.osn@gmail.com</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-200">
+              <p class="text-xs text-indigo-700 font-medium">Total Simulasi Tersimpan</p>
+              <p id="historyTotalAttemptsText" class="text-xl font-extrabold text-indigo-900 mt-0.5">0 Kali</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200">
+              <p class="text-xs text-emerald-700 font-medium">Skor Tertinggi Anda</p>
+              <p id="historyBestScoreText" class="text-xl font-extrabold text-emerald-800 mt-0.5">0</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200">
+              <p class="text-xs text-amber-800 font-medium">Batas Kuota per Email</p>
+              <p class="text-sm font-extrabold text-amber-900 mt-1">Maks. 15 Sesi / 30 Hari</p>
+            </div>
+          </div>
+
+          <!-- Tabel Daftar Riwayat Pengerjaan -->
+          <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr class="bg-slate-900 text-white">
+                  <th class="py-3 px-4 font-bold">Waktu Selesai</th>
+                  <th class="py-3 px-4 font-bold">Peserta &amp; Email</th>
+                  <th class="py-3 px-4 font-bold">Paket Ujian &amp; Jenjang</th>
+                  <th class="py-3 px-4 font-bold text-center">Skor Akhir</th>
+                  <th class="py-3 px-4 font-bold text-center">Benar / Salah / Kosong</th>
+                  <th class="py-3 px-4 font-bold text-center">Durasi Kerja</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody" class="divide-y divide-slate-200 bg-white">
+                <!-- Diisi via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <!-- ========================================================== -->
       <!-- VIEW 3 (ADMIN ONLY): UPLOAD PDF / TEMPLATE & GENERATOR AI  -->
       <!-- ========================================================== -->
@@ -787,7 +970,6 @@
             </div>
           </div>
 
-          
           <!-- PANEL INTEGRASI CLOUD GOOGLE SHEETS (TERTATA DI GOOGLE DRIVE ANDA) -->
           <div class="rounded-2xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50/90 via-white to-sky-50/90 p-5 space-y-4 shadow-sm">
             <div class="flex flex-wrap items-center justify-between gap-3">
@@ -797,7 +979,7 @@
                   <div class="flex items-center gap-2 flex-wrap">
                     <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Sinkronisasi Database Cloud Google Sheets</h3>
                     <span id="cloudSyncStatusBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                      Spreadsheet Drive Siap
+                      Spreadsheet Drive Siap (Auto-Purge 30 Hari)
                     </span>
                   </div>
                   <p class="text-xs text-slate-600">
@@ -1062,7 +1244,7 @@
         <div class="space-y-1">
           <h3 class="font-bold text-slate-900 text-lg">Akhiri Simulasi Ujian?</h3>
           <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            Pastikan seluruh jawaban Anda telah dikonfirmasi. Setelah selesai, akses <strong>Halaman Pembahasan</strong> akan dibuka untuk Anda.
+            Pastikan seluruh jawaban Anda telah dikonfirmasi. Setelah selesai, hasil nilai akan tercatat ke <strong>Riwayat Simulasi</strong> dan akses <strong>Halaman Pembahasan</strong> akan dibuka.
           </p>
         </div>
       </div>
@@ -2303,7 +2485,28 @@ function doPost(e) {
 
   if (body.action === 'SUBMIT_SCORE') {
     const scoreSheet = ss.getSheetByName('Rekap_Nilai_Peserta');
-    scoreSheet.appendRow([new Date(), body.studentName || 'Peserta', body.pkgId || '', body.pkgTitle || '', body.score || 0, body.correctCount || 0, body.wrongCount || 0, body.emptyCount || 0]);
+    const now = new Date();
+    const retentionDays = Number(body.retentionDays) || 30;
+    const cutoffTime = now.getTime() - (retentionDays * 24 * 60 * 60 * 1000);
+    // Auto-Purge rows older than retentionDays (default 30 days)
+    const rows = scoreSheet.getDataRange().getValues();
+    for (let r = rows.length - 1; r >= 1; r--) {
+      const rowDate = new Date(rows[r][0]);
+      if (!isNaN(rowDate.getTime()) && rowDate.getTime() < cutoffTime) {
+        scoreSheet.deleteRow(r + 1);
+      }
+    }
+    scoreSheet.appendRow([
+      now,
+      body.studentName || 'Peserta',
+      body.studentEmail || 'peserta.osn@gmail.com',
+      body.pkgId || '',
+      body.pkgTitle || '',
+      body.score || 0,
+      body.correctCount || 0,
+      body.wrongCount || 0,
+      body.emptyCount || 0
+    ]);
     return ContentService.createTextOutput(JSON.stringify({ status: 'score_logged' })).setMimeType(ContentService.MimeType.JSON);
   }
 
@@ -2449,6 +2652,12 @@ function doPost(e) {
     }
 
     const STORAGE_KEY = "masGG_CBT_Pro_State_v3";
+    const HISTORY_STORAGE_KEY = "masGG_CBT_Pro_History_v3";
+    const MAX_RECORDS_PER_EMAIL = 15;
+    let retentionDaysPolicy = 30;
+    let examHistoryRecords = [];
+    let currentStudentEmail = "peserta.osn@gmail.com";
+    let examConfiguredTotalSeconds = 60 * 60;
     const answerState = {};
 
     function initAnswerState() {
@@ -2463,6 +2672,148 @@ function doPost(e) {
       });
     }
 
+    function resetAllAnswerStateCleanly() {
+      questions.forEach(q => {
+        answerState[q.id] = {
+          draftChoice: null,
+          confirmedChoice: null,
+          doubtful: false
+        };
+      });
+      currentExamIndex = 0;
+      currentReviewIndex = 0;
+      isExamSubmitted = false;
+    }
+
+    // =========================================================
+    // AUTO-CLEANUP & EXAM HISTORY ENGINE (RETENTION + QUOTA)
+    // =========================================================
+    function loadAndPurgeHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) examHistoryRecords = parsed;
+        }
+      } catch (e) {
+        examHistoryRecords = [];
+      }
+      runHistoryAutoPurge();
+    }
+
+    function runHistoryAutoPurge() {
+      const nowMs = Date.now();
+      const cutoffMs = nowMs - (retentionDaysPolicy * 24 * 60 * 60 * 1000);
+      // 1. Purge records older than retentionDaysPolicy (default 30 days)
+      let filtered = examHistoryRecords.filter(rec => {
+        const ts = Number(rec.timestampMs) || nowMs;
+        return ts >= cutoffMs;
+      });
+      // 2. Sort newest first and cap at MAX_RECORDS_PER_EMAIL (15) per email so storage never bloats
+      filtered.sort((a, b) => (b.timestampMs || 0) - (a.timestampMs || 0));
+      const perEmailCount = {};
+      examHistoryRecords = filtered.filter(rec => {
+        const emailKey = (rec.studentEmail || "anon@gmail.com").toLowerCase().trim();
+        perEmailCount[emailKey] = (perEmailCount[emailKey] || 0) + 1;
+        return perEmailCount[emailKey] <= MAX_RECORDS_PER_EMAIL;
+      });
+      try {
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(examHistoryRecords));
+      } catch (e) {}
+      updateHistoryBadgesAndTable();
+    }
+
+    function recordExamAttemptToHistory(statsObj) {
+      loadAndPurgeHistory();
+      const pkg = packageCatalog.find(p => p.pkgId === activePackageId) || packageCatalog[0];
+      const elapsedSec = Math.max(1, examConfiguredTotalSeconds - totalSecondsRemaining);
+      const newRec = {
+        id: "hist-" + Date.now(),
+        timestampMs: Date.now(),
+        dateFormatted: new Date().toLocaleString("id-ID", {
+          day: "2-digit", month: "short", year: "numeric",
+          hour: "2-digit", minute: "2-digit"
+        }),
+        studentName: (document.getElementById("inputStudentName")?.value || "Peserta Simulasi").trim(),
+        studentEmail: (document.getElementById("inputStudentEmail")?.value || currentStudentEmail || "peserta.osn@gmail.com").trim().toLowerCase(),
+        pkgId: pkg.pkgId,
+        pkgTitle: pkg.title,
+        pkgLevel: pkg.level,
+        pkgSubject: pkg.subject,
+        score: statsObj.score,
+        correctCount: statsObj.correctCount,
+        wrongCount: statsObj.wrongCount,
+        emptyCount: statsObj.emptyCount,
+        durationUsedFormatted: formatSeconds(elapsedSec)
+      };
+      examHistoryRecords.unshift(newRec);
+      runHistoryAutoPurge();
+    }
+
+    function updateHistoryBadgesAndTable() {
+      const emailNorm = (document.getElementById("inputStudentEmail")?.value || currentStudentEmail || "peserta.osn@gmail.com").trim().toLowerCase();
+      const visibleRecords = currentUserRole === "admin"
+        ? examHistoryRecords
+        : examHistoryRecords.filter(r => (r.studentEmail || "").toLowerCase() === emailNorm);
+
+      const navBadge = document.getElementById("navHistoryCountBadge");
+      if (navBadge) navBadge.textContent = String(visibleRecords.length);
+
+      const emailBadge = document.getElementById("historyUserEmailBadge");
+      if (emailBadge) {
+        emailBadge.textContent = currentUserRole === "admin"
+          ? `👑 Semua Peserta (${examHistoryRecords.length} Sesi)`
+          : emailNorm;
+      }
+
+      const totalAttemptsEl = document.getElementById("historyTotalAttemptsText");
+      if (totalAttemptsEl) totalAttemptsEl.textContent = `${visibleRecords.length} Kali`;
+
+      const bestScoreEl = document.getElementById("historyBestScoreText");
+      if (bestScoreEl) {
+        const best = visibleRecords.reduce((max, r) => Math.max(max, Number(r.score) || 0), 0);
+        bestScoreEl.textContent = String(best);
+      }
+
+      const tbody = document.getElementById("historyTableBody");
+      if (!tbody) return;
+      if (visibleRecords.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-8 px-4 text-center text-slate-500 text-xs sm:text-sm">
+              Belum ada riwayat simulasi ujian untuk akun <strong>${emailNorm}</strong>. Selesaikan minimal 1 sesi simulasi ujian untuk melihat rekap riwayat nilai Anda di sini.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = visibleRecords.map(rec => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="py-3 px-4 font-mono text-xs text-slate-600">${rec.dateFormatted}</td>
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-900 text-xs sm:text-sm">${rec.studentName}</div>
+            <div class="text-[11px] text-indigo-600 font-medium">${rec.studentEmail}</div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-800 text-xs sm:text-sm">${rec.pkgTitle}</div>
+            <span class="inline-block mt-0.5 px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold">${rec.pkgLevel || "Umum"} • ${rec.pkgSubject || "Sains"}</span>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <span class="inline-flex items-center justify-center px-3 py-1 rounded-xl font-extrabold text-sm ${
+              rec.score >= 75 ? "bg-emerald-100 text-emerald-800" : rec.score >= 50 ? "bg-amber-100 text-amber-800" : "bg-rose-100 text-rose-800"
+            }">${rec.score}</span>
+          </td>
+          <td class="py-3 px-4 text-center text-xs font-semibold">
+            <span class="text-emerald-700">${rec.correctCount} Benar</span> •
+            <span class="text-rose-600">${rec.wrongCount} Salah</span> •
+            <span class="text-slate-500">${rec.emptyCount} Kosong</span>
+          </td>
+          <td class="py-3 px-4 text-center font-mono text-xs font-bold text-slate-700">${rec.durationUsedFormatted || "-"}</td>
+        </tr>
+      `).join("");
+    }
+
     function saveStateToLocalStorage() {
       try {
         const payload = {
@@ -2471,6 +2822,8 @@ function doPost(e) {
           isExamSubmitted,
           answerState,
           studentName: document.getElementById("inputStudentName")?.value || "Peserta mas GG CBT",
+          studentEmail: document.getElementById("inputStudentEmail")?.value || currentStudentEmail,
+          retentionDaysPolicy,
           savedAt: new Date().toISOString()
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -2495,6 +2848,16 @@ function doPost(e) {
         }
         if (parsed && parsed.studentName && document.getElementById("inputStudentName")) {
           document.getElementById("inputStudentName").value = parsed.studentName;
+          if (document.getElementById("portalUsernameInput")) document.getElementById("portalUsernameInput").value = parsed.studentName;
+        }
+        if (parsed && parsed.studentEmail) {
+          currentStudentEmail = parsed.studentEmail;
+          if (document.getElementById("inputStudentEmail")) document.getElementById("inputStudentEmail").value = parsed.studentEmail;
+          if (document.getElementById("portalEmailInput")) document.getElementById("portalEmailInput").value = parsed.studentEmail;
+        }
+        if (parsed && parsed.retentionDaysPolicy) {
+          retentionDaysPolicy = Number(parsed.retentionDaysPolicy) || 30;
+          if (document.getElementById("selectRetentionDays")) document.getElementById("selectRetentionDays").value = String(retentionDaysPolicy);
         }
       } catch (e) {}
     }
@@ -2627,6 +2990,31 @@ function doPost(e) {
         }
       }
 
+      const emailDisplayEl = document.getElementById("heroActiveEmailText");
+      if (emailDisplayEl) {
+        emailDisplayEl.textContent = (document.getElementById("inputStudentEmail")?.value || currentStudentEmail || "peserta.osn@gmail.com").trim();
+      }
+
+      // Update Start Exam button labels so user clearly sees fresh reset vs ongoing session
+      let answeredCountNow = 0;
+      questions.forEach(q => {
+        const st = answerState[q.id];
+        if (st && (st.confirmedChoice !== null || st.draftChoice !== null)) answeredCountNow++;
+      });
+      const hasOngoingUnfinished = !isExamSubmitted && answeredCountNow > 0 && timerIntervalId !== null;
+      const startMainLbl = document.getElementById("btnStartExamMainLabel");
+      const startCardLbl = document.getElementById("btnStartExamCardLabel");
+      if (startMainLbl) {
+        startMainLbl.textContent = hasOngoingUnfinished
+          ? `Lanjutkan Sesi Ujian (${answeredCountNow}/${questions.length} Terjawab)`
+          : "Mulai Ujian Sekarang";
+      }
+      if (startCardLbl) {
+        startCardLbl.textContent = hasOngoingUnfinished
+          ? "Lanjutkan Sesi Ujian Aktif"
+          : "Mulai Simulasi Ujian";
+      }
+
       // Update Review Nav Button Lock state
       const canAccessReview = isAdmin || isExamSubmitted;
       if (canAccessReview) {
@@ -2741,6 +3129,7 @@ function doPost(e) {
         setup: document.getElementById("viewSetup"),
         exam: document.getElementById("viewExam"),
         review: document.getElementById("viewReview"),
+        history: document.getElementById("viewHistory"),
         template: document.getElementById("viewTemplate"),
         devqa: document.getElementById("viewDevQA")
       };
@@ -2749,6 +3138,7 @@ function doPost(e) {
         setup: document.getElementById("navBtnSetup"),
         exam: document.getElementById("navBtnExam"),
         review: document.getElementById("navBtnReview"),
+        history: document.getElementById("navBtnHistory"),
         template: document.getElementById("navBtnTemplate"),
         devqa: document.getElementById("navBtnDevQA")
       };
@@ -2765,6 +3155,7 @@ function doPost(e) {
       navBtns.setup.className = inactiveClass;
       navBtns.exam.className = inactiveClass;
       navBtns.review.className = (currentUserRole === "admin" || isExamSubmitted) ? inactiveClass : lockedClass;
+      if (navBtns.history) navBtns.history.className = inactiveClass;
       if (currentUserRole === "admin") {
         navBtns.template.className = inactiveClass;
         navBtns.devqa.className = inactiveClass;
@@ -2780,6 +3171,10 @@ function doPost(e) {
         headerFinishBtn.classList.add("inline-flex");
         document.getElementById("examParticipantName").textContent =
           document.getElementById("inputStudentName").value.trim() || "Peserta mas GG CBT";
+        const emailHeaderEl = document.getElementById("examParticipantEmail");
+        if (emailHeaderEl) {
+          emailHeaderEl.textContent = (document.getElementById("inputStudentEmail")?.value || currentStudentEmail || "peserta.osn@gmail.com").trim();
+        }
         renderExamQuestion();
       } else {
         liveTimerBadge.classList.add("hidden");
@@ -2794,6 +3189,8 @@ function doPost(e) {
         renderSetupQuestionList();
       } else if (targetView === "review") {
         renderReviewPage();
+      } else if (targetView === "history") {
+        updateHistoryBadgesAndTable();
       } else if (targetView === "devqa") {
         populateQASelector();
         renderQAQuestionEditor();
@@ -2822,7 +3219,13 @@ function doPost(e) {
       }
     }
 
-    function startExamWithConfiguredTime() {
+    function startExamWithConfiguredTime(forceFreshReset = true) {
+      // CRITICAL FIX (POINT 3): If previous exam was already finished (isExamSubmitted === true) OR forceFreshReset is true,
+      // completely clear all previous answers, doubt flags, and reset question index to 0 (Question No. 1)!
+      if (forceFreshReset || isExamSubmitted) {
+        resetAllAnswerStateCleanly();
+        saveStateToLocalStorage();
+      }
       const minInput = document.getElementById("inputDurationMin");
       const secInput = document.getElementById("inputDurationSec");
       let rawMin = parseInt(minInput.value || "60", 10);
@@ -2841,6 +3244,7 @@ function doPost(e) {
       }
 
       totalSecondsRemaining = Math.min(MAX_EXAM_MINUTES * 60, Math.max(10, rawMin * 60 + Math.min(59, rawSec)));
+      examConfiguredTotalSeconds = totalSecondsRemaining;
       isTimerPaused = false;
       document.getElementById("btnPauseResumeTimer").textContent = "⏸️ Jeda Waktu";
       updateTimerUI();
@@ -2907,7 +3311,7 @@ function doPost(e) {
         row.addEventListener("click", () => {
           currentExamIndex = idx;
           if (!timerIntervalId) {
-            startExamWithConfiguredTime();
+            startExamWithConfiguredTime(isExamSubmitted);
           } else {
             switchView("exam");
           }
@@ -3624,15 +4028,45 @@ function doPost(e) {
     }
 
     function finalizeExamAndGoToReview(toastText) {
+      let correctCount = 0;
+      let wrongCount = 0;
+      let emptyCount = 0;
+
       questions.forEach(q => {
         const st = answerState[q.id];
         if (st.confirmedChoice === null && st.draftChoice !== null) {
           st.confirmedChoice = st.draftChoice;
         }
+        const ans = st.confirmedChoice;
+        if (ans === null) emptyCount++;
+        else if (ans === q.correctIndex) correctCount++;
+        else wrongCount++;
       });
 
+      const wasSubmittedBefore = isExamSubmitted;
       // Mark exam as submitted so Review Page unlocks for User role!
       isExamSubmitted = true;
+
+      if (!wasSubmittedBefore) {
+        const score = Math.round((correctCount / (questions.length || 1)) * 100);
+        const pkg = packageCatalog.find(p => p.pkgId === activePackageId) || packageCatalog[0];
+        const studentName = (document.getElementById("inputStudentName")?.value || "Peserta Simulasi").trim();
+        const studentEmail = (document.getElementById("inputStudentEmail")?.value || currentStudentEmail || "peserta.osn@gmail.com").trim().toLowerCase();
+
+        recordExamAttemptToHistory({ score, correctCount, wrongCount, emptyCount });
+        pushScoreToGoogleSheetsCloud({
+          studentName,
+          studentEmail,
+          pkgId: pkg.pkgId,
+          pkgTitle: pkg.title,
+          score,
+          correctCount,
+          wrongCount,
+          emptyCount,
+          retentionDays: retentionDaysPolicy
+        });
+      }
+
       applyRolePermissionsUI();
       saveStateToLocalStorage();
 
@@ -4040,10 +4474,16 @@ Tugas Anda:
       // Top Navigation
       document.getElementById("navBtnSetup").addEventListener("click", () => switchView("setup"));
       document.getElementById("navBtnExam").addEventListener("click", () => {
-        if (!timerIntervalId) startExamWithConfiguredTime();
-        else switchView("exam");
+        if (isExamSubmitted || !timerIntervalId) {
+          // If previous exam was already finished or timer not running, start fresh from No. 1 if finished
+          startExamWithConfiguredTime(isExamSubmitted);
+        } else {
+          switchView("exam");
+        }
       });
       document.getElementById("navBtnReview").addEventListener("click", () => switchView("review"));
+      document.getElementById("navBtnHistory").addEventListener("click", () => switchView("history"));
+      document.getElementById("btnHeroViewHistory").addEventListener("click", () => switchView("history"));
       document.getElementById("navBtnTemplate").addEventListener("click", () => switchView("template"));
       document.getElementById("navBtnDevQA").addEventListener("click", () => switchView("devqa"));
       document.getElementById("btnHeroGoUpload").addEventListener("click", () => switchView("template"));
@@ -4053,19 +4493,29 @@ Tugas Anda:
       const appShell = document.getElementById("appAuthenticatedShell");
       const portalForm = document.getElementById("portalLoginForm");
 
-      function enterAuthenticatedApp(username, role) {
+      function enterAuthenticatedApp(username, email, role) {
+        const prevEmail = currentStudentEmail;
         currentUserRole = role;
+        currentStudentEmail = email.toLowerCase().trim();
         document.getElementById("inputStudentName").value = username;
+        if (document.getElementById("inputStudentEmail")) {
+          document.getElementById("inputStudentEmail").value = currentStudentEmail;
+        }
+        // If a different user email logs in OR the previous exam was already submitted, reset session state cleanly
+        if (prevEmail !== currentStudentEmail || isExamSubmitted) {
+          resetAllAnswerStateCleanly();
+        }
         viewLogin.classList.add("hidden");
         appShell.classList.remove("hidden");
         appShell.classList.add("flex");
+        loadAndPurgeHistory();
         applyRolePermissionsUI();
         switchView("setup");
         saveStateToLocalStorage();
         showToast(
           role === "admin"
             ? `Selamat datang, Administrator (${username})!`
-            : `Selamat datang, ${username}! Silakan pilih paket ujian.`,
+            : `Selamat datang, ${username} (${currentStudentEmail})! Silakan pilih jenjang & paket ujian.`,
           role === "admin" ? "👑" : "👤"
         );
       }
@@ -4085,22 +4535,90 @@ Tugas Anda:
       portalForm.addEventListener("submit", (ev) => {
         ev.preventDefault();
         const rawUser = document.getElementById("portalUsernameInput").value.trim() || "Peserta Simulasi";
+        const rawEmail = document.getElementById("portalEmailInput").value.trim() || "peserta.osn@gmail.com";
         const rawPass = document.getElementById("portalPasswordInput").value.trim();
 
         // Stealth Admin Detection: if username is 'admin' (case-insensitive) or password is 'admin' or 'admin123', log in as Admin; otherwise log in as regular User
         const isAdminAuth =
           rawUser.toLowerCase() === "admin" ||
+          rawEmail.toLowerCase().startsWith("admin@") ||
           rawPass.toLowerCase() === "admin" ||
           rawPass === "admin123";
 
-        enterAuthenticatedApp(rawUser, isAdminAuth ? "admin" : "user");
+        enterAuthenticatedApp(rawUser, rawEmail, isAdminAuth ? "admin" : "user");
       });
 
       document.getElementById("btnOpenLoginModal").addEventListener("click", logoutToPortal);
 
-      // Filter Catalog
-      document.getElementById("filterLevelSelect").addEventListener("change", renderPackageCatalogCards);
-      document.getElementById("filterSubjectSelect").addEventListener("change", renderPackageCatalogCards);
+      // Step-by-Step Level & Subject Wizard + Catalog Filter
+      function syncWizardFilterHighlights() {
+        const lv = document.getElementById("filterLevelSelect").value;
+        const sb = document.getElementById("filterSubjectSelect").value;
+        document.querySelectorAll(".wizard-level-btn").forEach(btn => {
+          const active = btn.getAttribute("data-level-val") === lv;
+          btn.className = active
+            ? "wizard-level-btn p-3 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 text-left transition flex flex-col justify-between shadow-sm"
+            : "wizard-level-btn p-3 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-left transition flex flex-col justify-between";
+        });
+        document.querySelectorAll(".wizard-subject-btn").forEach(btn => {
+          const active = btn.getAttribute("data-subject-val") === sb;
+          btn.className = active
+            ? "wizard-subject-btn px-3.5 py-2 rounded-xl border-2 border-indigo-600 bg-indigo-50 text-indigo-800 font-bold text-xs transition shadow-sm"
+            : "wizard-subject-btn px-3.5 py-2 rounded-xl border border-slate-200 hover:border-indigo-300 bg-white text-slate-700 font-semibold text-xs transition";
+        });
+      }
+
+      document.getElementById("filterLevelSelect").addEventListener("change", () => {
+        syncWizardFilterHighlights();
+        renderPackageCatalogCards();
+      });
+      document.getElementById("filterSubjectSelect").addEventListener("change", () => {
+        syncWizardFilterHighlights();
+        renderPackageCatalogCards();
+      });
+
+      document.querySelectorAll(".wizard-level-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.getElementById("filterLevelSelect").value = btn.getAttribute("data-level-val");
+          syncWizardFilterHighlights();
+          renderPackageCatalogCards();
+        });
+      });
+
+      document.querySelectorAll(".wizard-subject-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.getElementById("filterSubjectSelect").value = btn.getAttribute("data-subject-val");
+          syncWizardFilterHighlights();
+          renderPackageCatalogCards();
+        });
+      });
+
+      // History Retention & Clear Controls
+      document.getElementById("selectRetentionDays").addEventListener("change", (e) => {
+        retentionDaysPolicy = Number(e.target.value) || 30;
+        runHistoryAutoPurge();
+        saveStateToLocalStorage();
+        showToast(`Kebijakan Auto-Hapus Riwayat diatur ke ${retentionDaysPolicy} Hari.`, "🧹");
+      });
+
+      document.getElementById("btnClearUserHistory").addEventListener("click", () => {
+        const emailNorm = (document.getElementById("inputStudentEmail")?.value || currentStudentEmail || "").toLowerCase().trim();
+        if (currentUserRole === "admin") {
+          examHistoryRecords = [];
+        } else {
+          examHistoryRecords = examHistoryRecords.filter(r => (r.studentEmail || "").toLowerCase() !== emailNorm);
+        }
+        try { localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(examHistoryRecords)); } catch (e) {}
+        updateHistoryBadgesAndTable();
+        showToast("Riwayat simulasi berhasil dibersihkan!", "🗑️");
+      });
+
+      document.getElementById("inputStudentEmail").addEventListener("change", (e) => {
+        currentStudentEmail = e.target.value.trim().toLowerCase() || "peserta.osn@gmail.com";
+        applyRolePermissionsUI();
+        updateHistoryBadgesAndTable();
+        saveStateToLocalStorage();
+      });
 
       // Clamp inputDurationMin to 180 on change
       document.getElementById("inputDurationMin").addEventListener("change", (e) => {
@@ -4138,8 +4656,14 @@ Tugas Anda:
         });
       });
 
-      document.getElementById("btnStartExamMain").addEventListener("click", startExamWithConfiguredTime);
-      document.getElementById("btnStartExamCard").addEventListener("click", startExamWithConfiguredTime);
+      document.getElementById("btnStartExamMain").addEventListener("click", () => {
+        const shouldReset = isExamSubmitted || timerIntervalId === null;
+        startExamWithConfiguredTime(shouldReset);
+      });
+      document.getElementById("btnStartExamCard").addEventListener("click", () => {
+        const shouldReset = isExamSubmitted || timerIntervalId === null;
+        startExamWithConfiguredTime(shouldReset);
+      });
 
       document.getElementById("btnJumpDemoReview").addEventListener("click", () => {
         currentReviewIndex = 0;
@@ -4617,6 +5141,7 @@ ${rawPdfText.substring(0, 18000)}`;
       });
 
       // Initial Boot
+      loadAndPurgeHistory();
       renderPackageCatalogCards();
       renderSetupQuestionList();
       populateQASelector();
